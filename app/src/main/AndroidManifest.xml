@@ -12,6 +12,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PeerTutoringApplication">
 
+        <!-- Dashboard Activity -->
+        <activity
+            android:name=".ui.dashboard.DashboardActivity"
+            android:exported="false" />
+
+        <!-- Login Activity -->
         <activity
             android:name=".ui.auth.LoginActivity"
             android:exported="true"
@@ -22,10 +28,12 @@
             </intent-filter>
         </activity>
 
+        <!-- Registration Activity -->
         <activity
             android:name=".ui.auth.RegisterActivity"
             android:exported="false" />
 
+        <!-- Main Activity -->
         <activity
             android:name=".MainActivity"
             android:exported="false" />

@@ -9,6 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.peertutoringapplication.data.datasource.DatabaseProvider
 import com.example.peertutoringapplication.data.repository.UserRepository
 import com.example.peertutoringapplication.databinding.ActivityLoginBinding
+import com.example.peertutoringapplication.ui.dashboard.DashboardActivity
 import com.example.peertutoringapplication.utils.SessionManager
 import com.example.peertutoringapplication.viewmodel.UserViewModel
 import com.example.peertutoringapplication.viewmodel.UserViewModelFactory
@@ -69,11 +70,26 @@ class LoginActivity : AppCompatActivity() {
     private fun observeLoggedInUser() {
         lifecycleScope.launch {
             userViewModel.loggedInUser.collect { user ->
+
                 if (user != null) {
+
+                    // Save the user's session
                     sessionManager.saveUserSession(
                         userId = user.userId,
                         role = user.role
                     )
+
+                    // Navigate to Dashboard
+                    val intent = Intent(
+                        this@LoginActivity,
+                        DashboardActivity::class.java
+                    )
+
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK
+
+                    startActivity(intent)
+                    finish()
                 }
             }
         }
