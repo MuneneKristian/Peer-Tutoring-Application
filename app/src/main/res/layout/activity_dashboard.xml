@@ -1,8 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#F5F6FA">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:id="@+id/tvWelcome"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Welcome to Peer Tutoring"
+            android:textColor="#202124"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/tvRole"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Your account"
+            android:textColor="#666666"
+            android:textSize="16sp"
+            android:layout_marginBottom="24dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="What would you like to do?"
+            android:textColor="#202124"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
+
+        <Button
+            android:id="@+id/btnFindTutors"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Find Tutors" />
+
+        <Button
+            android:id="@+id/btnTutorProfile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="My Tutor Profile" />
+
+        <Button
+            android:id="@+id/btnManageUnits"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Manage Teaching Units" />
+
+        <Button
+            android:id="@+id/btnAvailability"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Manage Availability" />
+
+        <Button
+            android:id="@+id/btnRequests"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tutoring Requests" />
+
+        <Button
+            android:id="@+id/btnMeetings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Meetings" />
+
+        <Button
+            android:id="@+id/btnMessages"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Messages" />
+
+        <Button
+            android:id="@+id/btnLogout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Logout"
+            android:layout_marginTop="20dp" />
+
+    </LinearLayout>
 </ScrollView>
-
-<!--Member2-->
