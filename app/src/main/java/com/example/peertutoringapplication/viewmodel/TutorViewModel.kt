@@ -1,0 +1,88 @@
+package com.example.peertutoringapplication.viewmodel
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.peertutoringapplication.data.model.Availability
+import com.example.peertutoringapplication.data.model.TutorProfile
+import com.example.peertutoringapplication.data.model.TutorUnit
+import com.example.peertutoringapplication.data.model.UniversityUnit
+import com.example.peertutoringapplication.data.repository.TutorRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+
+class TutorViewModel(
+    private val repository: TutorRepository
+) : ViewModel() {
+
+    private val _tutorProfile = MutableStateFlow<TutorProfile?>(null)
+    val tutorProfile: StateFlow<TutorProfile?> = _tutorProfile
+
+    private val _units = MutableStateFlow<List<UniversityUnit>>(emptyList())
+    val units: StateFlow<List<UniversityUnit>> = _units
+
+    private val _availability = MutableStateFlow<List<Availability>>(emptyList())
+    val availability: StateFlow<List<Availability>> = _availability
+
+    private val _message = MutableStateFlow<String?>(null)
+    val message: StateFlow<String?> = _message
+
+    fun saveTutorProfile(profile: TutorProfile) {
+        viewModelScope.launch {
+            try {
+                repository.saveTutorProfile(profile)
+                _tutorProfile.value = profile
+                _message.value = "Tutor profile saved successfully."
+            } catch (e: Exception) {
+                _message.value = "Could not save tutor profile."
+            }
+        }
+    }
+
+    fun loadTutorProfile(userId: Int) {
+        viewModelScope.launch {
+            _tutorProfile.value = repository.getTutorProfile(userId)
+        }
+    }
+
+    fun loadUnits() {
+        viewModelScope.launch {
+            _units.value = repository.getAllUnits()
+        }
+    }
+
+    fun assignUnit(userId: Int, unitId: Int) {
+        viewModelScope.launch {
+            try {
+                repository.assignUnit(TutorUnit(userId, unitId))
+                _message.value = "Unit assigned successfully."
+            } catch (e: Exception) {
+                _message.value = "Could not assign unit."
+            }
+        }
+    }
+
+    fun loadTutorUnits(userId: Int) {
+        viewModelScope.launch {
+            _units.value = repository.getUnitsForTutor(userId)
+        }
+    }
+
+    fun addAvailability(availability: Availability) {
+        viewModelScope.launch {
+            try {
+                repository.addAvailability(availability)
+                loadAvailability(availability.userId)
+                _message.value = "Availability added successfully."
+            } catch (e: Exception) {
+                _message.value = "Could not add availability."
+            }
+        }
+    }
+
+    fun loadAvailability(userId: Int) {
+        viewModelScope.launch {
+            _availability.value = repository.getAvailability(userId)
+        }
+    }
+}
