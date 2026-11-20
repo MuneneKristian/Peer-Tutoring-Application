@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.peertutoringapplication.data.datasource.DatabaseProvider
+import com.example.peertutoringapplication.data.model.TutorProfile
 import com.example.peertutoringapplication.data.repository.TutorRepository
 import com.example.peertutoringapplication.databinding.ActivityTutorProfileBinding
 import com.example.peertutoringapplication.utils.SessionManager
@@ -28,6 +29,7 @@ class TutorProfileActivity : AppCompatActivity() {
         sessionManager = SessionManager(this)
 
         val database = DatabaseProvider.getDatabase(applicationContext)
+
         val repository = TutorRepository(
             database.tutorProfileDao(),
             database.universityUnitDao(),
@@ -40,34 +42,47 @@ class TutorProfileActivity : AppCompatActivity() {
             TutorViewModelFactory(repository)
         )[TutorViewModel::class.java]
 
-        loadProfile()
+        observeProfile()
+        observeMessages()
+
+        tutorViewModel.loadTutorProfile(sessionManager.getUserId())
 
         binding.btnSaveProfile.setOnClickListener {
             saveProfile()
         }
     }
 
-    private fun loadProfile() {
-        val userId = sessionManager.getUserId()
-
+    private fun observeProfile() {
         lifecycleScope.launch {
-            val profile = tutorViewModel.getProfile(userId)
+            tutorViewModel.tutorProfile.collect { profile ->
 
-            if (profile != null) {
-                binding.etCourse.setText(profile.course)
-                binding.etYearOfStudy.setText(profile.yearOfStudy)
-                binding.etBio.setText(profile.bio)
+                if (profile != null) {
+                    binding.etCourse.setText(profile.course)
+                    binding.etYearOfStudy.setText(profile.yearOfStudy)
+                    binding.etBio.setText(profile.bio)
 
-                when (profile.teachingMode) {
-                    "Physical" -> binding.rbPhysical.isChecked = true
-                    "Online" -> binding.rbOnline.isChecked = true
-                    "Both" -> binding.rbBoth.isChecked = true
+                    when (profile.teachingMode) {
+                        "Physical" -> binding.rbPhysical.isChecked = true
+                        "Online" -> binding.rbOnline.isChecked = true
+                        "Both" -> binding.rbBoth.isChecked = true
+                    }
+                }
+            }
+        }
+    }
+
+    private fun observeMessages() {
+        lifecycleScope.launch {
+            tutorViewModel.message.collect { message ->
+                if (message != null) {
+                    Toast.makeText(this@TutorProfileActivity, message, Toast.LENGTH_SHORT).show()
                 }
             }
         }
     }
 
     private fun saveProfile() {
+
         val userId = sessionManager.getUserId()
 
         val course = binding.etCourse.text.toString().trim()
@@ -91,14 +106,14 @@ class TutorProfileActivity : AppCompatActivity() {
             return
         }
 
-        tutorViewModel.saveProfile(
-            userId,
-            bio,
-            course,
-            year,
-            teachingMode
+        val profile = TutorProfile(
+            userId = userId,
+            bio = bio,
+            course = course,
+            yearOfStudy = year,
+            teachingMode = teachingMode
         )
 
-        Toast.makeText(this, "Profile saved successfully", Toast.LENGTH_SHORT).show()
+        tutorViewModel.saveTutorProfile(profile)
     }
-}//Member3
+}

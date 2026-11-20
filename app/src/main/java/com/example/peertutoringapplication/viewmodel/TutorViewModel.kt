@@ -21,6 +21,9 @@ class TutorViewModel(
     private val _units = MutableStateFlow<List<UniversityUnit>>(emptyList())
     val units: StateFlow<List<UniversityUnit>> = _units
 
+    private val _tutorUnits = MutableStateFlow<List<UniversityUnit>>(emptyList())
+    val tutorUnits: StateFlow<List<UniversityUnit>> = _tutorUnits
+
     private val _availability = MutableStateFlow<List<Availability>>(emptyList())
     val availability: StateFlow<List<Availability>> = _availability
 
@@ -34,7 +37,7 @@ class TutorViewModel(
                 _tutorProfile.value = profile
                 _message.value = "Tutor profile saved successfully."
             } catch (e: Exception) {
-                _message.value = "Could not save tutor profile."
+                _message.value = "Could not save tutor profile: ${e.message}"
             }
         }
     }
@@ -55,16 +58,17 @@ class TutorViewModel(
         viewModelScope.launch {
             try {
                 repository.assignUnit(TutorUnit(userId, unitId))
+                loadTutorUnits(userId)
                 _message.value = "Unit assigned successfully."
             } catch (e: Exception) {
-                _message.value = "Could not assign unit."
+                _message.value = "Could not assign unit: ${e.message}"
             }
         }
     }
 
     fun loadTutorUnits(userId: Int) {
         viewModelScope.launch {
-            _units.value = repository.getUnitsForTutor(userId)
+            _tutorUnits.value = repository.getUnitsForTutor(userId)
         }
     }
 

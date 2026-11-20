@@ -6,6 +6,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.peertutoringapplication.databinding.ActivityDashboardBinding
 import com.example.peertutoringapplication.ui.auth.LoginActivity
+import com.example.peertutoringapplication.ui.tutor.TutorProfileActivity
+import com.example.peertutoringapplication.ui.tutor.ManageUnitsActivity
+import com.example.peertutoringapplication.ui.tutor.AvailabilityActivity
 import com.example.peertutoringapplication.utils.SessionManager
 
 class DashboardActivity : AppCompatActivity() {
@@ -21,7 +24,6 @@ class DashboardActivity : AppCompatActivity() {
 
         sessionManager = SessionManager(this)
 
-        // Check whether the user is logged in
         if (!sessionManager.isLoggedIn()) {
             navigateToLogin()
             return
@@ -45,15 +47,15 @@ class DashboardActivity : AppCompatActivity() {
         }
 
         binding.btnTutorProfile.setOnClickListener {
-            showMessage("Tutor Profile")
+            startActivity(Intent(this, TutorProfileActivity::class.java))
         }
 
         binding.btnManageUnits.setOnClickListener {
-            showMessage("Manage Teaching Units")
+            startActivity(Intent(this, ManageUnitsActivity::class.java))
         }
 
         binding.btnAvailability.setOnClickListener {
-            showMessage("Manage Availability")
+            startActivity(Intent(this, AvailabilityActivity::class.java))
         }
 
         binding.btnRequests.setOnClickListener {
