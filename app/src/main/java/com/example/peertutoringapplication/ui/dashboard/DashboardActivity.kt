@@ -10,7 +10,7 @@ import com.example.peertutoringapplication.ui.tutor.TutorProfileActivity
 import com.example.peertutoringapplication.ui.tutor.ManageUnitsActivity
 import com.example.peertutoringapplication.ui.tutor.AvailabilityActivity
 import com.example.peertutoringapplication.utils.SessionManager
-
+import com.example.peertutoringapplication.ui.student.FindTutorsActivity
 class DashboardActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDashboardBinding
@@ -43,7 +43,7 @@ class DashboardActivity : AppCompatActivity() {
     private fun setupNavigation() {
 
         binding.btnFindTutors.setOnClickListener {
-            showMessage("Tutor Search")
+            startActivity(Intent(this, FindTutorsActivity::class.java))
         }
 
         binding.btnTutorProfile.setOnClickListener {
