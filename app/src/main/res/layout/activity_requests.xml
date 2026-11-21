@@ -1,8 +1,140 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#F5F7FA">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tutoring Requests"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            android:textColor="#172B4D"
+            android:layout_marginBottom="20dp" />
+
+        <!-- Create Request -->
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Send a Tutoring Request"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#2457A7"
+            android:layout_marginBottom="12dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select Tutor"
+            android:textSize="14sp"
+            android:textColor="#344054" />
+
+        <Spinner
+            android:id="@+id/spTutor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:layout_marginBottom="12dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select University Unit"
+            android:textSize="14sp"
+            android:textColor="#344054" />
+
+        <Spinner
+            android:id="@+id/spUnit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:layout_marginBottom="12dp" />
+
+        <EditText
+            android:id="@+id/etRequestDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Describe what you need help with"
+            android:gravity="top"
+            android:minLines="3"
+            android:inputType="textMultiLine"
+            android:padding="12dp"
+            android:backgroundTint="#526D82"
+            android:layout_marginBottom="12dp" />
+
+        <Button
+            android:id="@+id/btnSendRequest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Send Request"
+            android:textAllCaps="false"
+            android:backgroundTint="#2457A7"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Incoming Requests -->
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Incoming Requests"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#2457A7"
+            android:layout_marginBottom="10dp" />
+
+        <TextView
+            android:id="@+id/tvNoIncomingRequests"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="No incoming requests."
+            android:textColor="#667085"
+            android:gravity="center"
+            android:padding="12dp"
+            android:visibility="gone" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvIncomingRequests"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"
+            android:layout_marginBottom="20dp" />
+
+        <!-- Outgoing Requests -->
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="My Sent Requests"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#2457A7"
+            android:layout_marginBottom="10dp" />
+
+        <TextView
+            android:id="@+id/tvNoOutgoingRequests"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="You have not sent any requests."
+            android:textColor="#667085"
+            android:gravity="center"
+            android:padding="12dp"
+            android:visibility="gone" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvOutgoingRequests"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false" />
+
+    </LinearLayout>
 
 </ScrollView>
-
-    <!--Member5-->
