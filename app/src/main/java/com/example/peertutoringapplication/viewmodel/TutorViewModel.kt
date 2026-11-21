@@ -58,7 +58,9 @@ class TutorViewModel(
         viewModelScope.launch {
             try {
                 repository.assignUnit(TutorUnit(userId, unitId))
-                loadTutorUnits(userId)
+
+                _tutorUnits.value = repository.getUnitsForTutor(userId)
+
                 _message.value = "Unit assigned successfully."
             } catch (e: Exception) {
                 _message.value = "Could not assign unit: ${e.message}"

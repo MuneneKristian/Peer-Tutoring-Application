@@ -11,6 +11,7 @@ import com.example.peertutoringapplication.ui.tutor.ManageUnitsActivity
 import com.example.peertutoringapplication.ui.tutor.AvailabilityActivity
 import com.example.peertutoringapplication.utils.SessionManager
 import com.example.peertutoringapplication.ui.student.FindTutorsActivity
+import com.example.peertutoringapplication.ui.requests.RequestsActivity
 class DashboardActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDashboardBinding
@@ -59,7 +60,7 @@ class DashboardActivity : AppCompatActivity() {
         }
 
         binding.btnRequests.setOnClickListener {
-            showMessage("Tutoring Requests")
+            startActivity(Intent(this, RequestsActivity::class.java))
         }
 
         binding.btnMeetings.setOnClickListener {
