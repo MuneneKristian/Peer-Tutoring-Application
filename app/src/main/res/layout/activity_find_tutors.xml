@@ -1,8 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:background="#F5F7FA">
 
-</ScrollView>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Find a Tutor"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        android:textColor="#172B4D"
+        android:layout_marginBottom="8dp" />
 
-    <!--Member4-->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Search for students who can help you with your units."
+        android:textSize="14sp"
+        android:textColor="#667085"
+        android:layout_marginBottom="20dp" />
+
+    <EditText
+        android:id="@+id/etSearchTutor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter tutor name or unit code/name"
+        android:inputType="text"
+        android:singleLine="true"
+        android:padding="14dp"
+        android:backgroundTint="#526D82"
+        android:layout_marginBottom="12dp" />
+
+    <Button
+        android:id="@+id/btnSearchTutor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Search Tutors"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        android:backgroundTint="#2457A7"
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="20dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Available Tutors"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="#172B4D"
+        android:layout_marginBottom="10dp" />
+
+    <TextView
+        android:id="@+id/tvNoTutors"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No tutors found. Try another search."
+        android:textSize="14sp"
+        android:textColor="#667085"
+        android:gravity="center"
+        android:padding="20dp"
+        android:visibility="gone" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvTutors"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingBottom="12dp" />
+
+</LinearLayout>
