@@ -17,6 +17,10 @@
             android:exported="false" />
 
         <activity
+            android:name=".ui.requests.RequestsActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".ui.tutor.TutorProfileActivity"
             android:exported="false" />
 
@@ -26,6 +30,14 @@
 
         <activity
             android:name=".ui.tutor.AvailabilityActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.student.FindTutorsActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.tutor.TutorDetailsActivity"
             android:exported="false" />
 
         <activity

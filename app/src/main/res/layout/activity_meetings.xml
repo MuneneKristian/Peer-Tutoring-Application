@@ -1,8 +1,141 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#F5F7FA">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="My Meetings"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            android:textColor="#172B4D"
+            android:layout_marginBottom="20dp" />
+
+        <!-- Propose Meeting -->
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Propose a Meeting"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#2457A7"
+            android:layout_marginBottom="12dp" />
+
+        <EditText
+            android:id="@+id/etMeetingDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Meeting date (YYYY-MM-DD)"
+            android:inputType="date"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp" />
+
+        <EditText
+            android:id="@+id/etMeetingTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Meeting time (HH:MM)"
+            android:inputType="time"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Meeting Mode"
+            android:textSize="14sp"
+            android:textColor="#344054" />
+
+        <Spinner
+            android:id="@+id/spMeetingMode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:layout_marginBottom="12dp" />
+
+        <EditText
+            android:id="@+id/etMeetingLocation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Location or online meeting details"
+            android:inputType="text"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp" />
+
+        <Button
+            android:id="@+id/btnProposeMeeting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Propose Meeting"
+            android:textAllCaps="false"
+            android:backgroundTint="#2457A7"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Pending Meetings -->
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Pending Meeting Proposals"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#2457A7"
+            android:layout_marginBottom="10dp" />
+
+        <TextView
+            android:id="@+id/tvNoPendingMeetings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="No pending meeting proposals."
+            android:textColor="#667085"
+            android:gravity="center"
+            android:padding="12dp"
+            android:visibility="gone" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvPendingMeetings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Confirmed Meetings -->
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Scheduled Meetings"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#2457A7"
+            android:layout_marginBottom="10dp" />
+
+        <TextView
+            android:id="@+id/tvNoScheduledMeetings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="No scheduled meetings."
+            android:textColor="#667085"
+            android:gravity="center"
+            android:padding="12dp"
+            android:visibility="gone" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvScheduledMeetings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false" />
+
+    </LinearLayout>
 
 </ScrollView>
-
-    <!--Member6-->
