@@ -36,6 +36,12 @@ class MessageViewModel(
         }
     }
 
+    fun loadReceivedMessages(userId: Int) {
+        viewModelScope.launch {
+            _messages.value = repository.getReceivedMessages(userId)
+        }
+    }
+
     fun markAsRead(messageId: Int) {
         viewModelScope.launch {
             try {

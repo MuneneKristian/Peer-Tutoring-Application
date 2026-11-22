@@ -9,12 +9,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.example.peertutoringapplication.data.datasource.DatabaseProvider
 import com.example.peertutoringapplication.data.model.Message
+import com.example.peertutoringapplication.data.repository.MessageRepository
 import com.example.peertutoringapplication.databinding.ActivityConversationBinding
 import com.example.peertutoringapplication.utils.SessionManager
 import com.example.peertutoringapplication.viewmodel.MessageViewModel
 import com.example.peertutoringapplication.viewmodel.MessageViewModelFactory
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -49,32 +51,47 @@ class ConversationActivity : AppCompatActivity() {
             return
         }
 
-        val factory = MessageViewModelFactory(application)
-        messageViewModel = ViewModelProvider(this, factory)[MessageViewModel::class.java]
+        val database = DatabaseProvider.getDatabase(this)
+        val repository = MessageRepository(database.messageDao())
+        val factory = MessageViewModelFactory(repository)
 
-        binding.tvConversationTitle.text = "Conversation with User #$otherUserId"
+        messageViewModel = ViewModelProvider(
+            this,
+            factory
+        )[MessageViewModel::class.java]
+
+        binding.tvConversationTitle.text =
+            "Conversation with User #$otherUserId"
 
         setupRecyclerView()
         setupSendButton()
-        loadMessages()
+        observeMessages()
+
+        messageViewModel.loadConversation(currentUserId, otherUserId)
     }
 
     private fun setupRecyclerView() {
         messageAdapter = MessageAdapter(messages, currentUserId)
 
-        binding.rvMessages.layoutManager = LinearLayoutManager(this).apply {
-            stackFromEnd = true
-        }
+        binding.rvMessages.layoutManager =
+            LinearLayoutManager(this).apply {
+                stackFromEnd = true
+            }
 
         binding.rvMessages.adapter = messageAdapter
     }
 
     private fun setupSendButton() {
         binding.btnSendMessage.setOnClickListener {
+
             val content = binding.etMessage.text.toString().trim()
 
             if (content.isEmpty()) {
-                Toast.makeText(this, "Enter a message first.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this,
+                    "Enter a message first.",
+                    Toast.LENGTH_SHORT
+                ).show()
                 return@setOnClickListener
             }
 
@@ -89,17 +106,12 @@ class ConversationActivity : AppCompatActivity() {
             messageViewModel.sendMessage(message)
 
             binding.etMessage.text.clear()
-            loadMessages()
         }
     }
 
-    private fun loadMessages() {
+    private fun observeMessages() {
         lifecycleScope.launch {
-            try {
-                val result = messageViewModel.getConversation(
-                    currentUserId,
-                    otherUserId
-                )
+            messageViewModel.messages.collect { result ->
 
                 messages.clear()
                 messages.addAll(result)
@@ -110,32 +122,40 @@ class ConversationActivity : AppCompatActivity() {
                     binding.rvMessages.scrollToPosition(messages.size - 1)
                 }
 
-            } catch (e: Exception) {
-                Toast.makeText(
-                    this@ConversationActivity,
-                    "Could not load messages: ${e.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
+                result.filter {
+                    it.receiverId == currentUserId && !it.isRead
+                }.forEach {
+                    messageViewModel.markAsRead(it.messageId)
+                }
             }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (::messageViewModel.isInitialized) {
+            messageViewModel.loadConversation(currentUserId, otherUserId)
         }
     }
 
     private class MessageAdapter(
         private val messages: List<Message>,
         private val currentUserId: Int
-    ) : RecyclerView.Adapter<MessageAdapter.MessageViewHolder>() {
+    ) : androidx.recyclerview.widget.RecyclerView.Adapter<MessageAdapter.MessageViewHolder>() {
 
         class MessageViewHolder(val textView: TextView) :
-            RecyclerView.ViewHolder(textView)
+            androidx.recyclerview.widget.RecyclerView.ViewHolder(textView)
 
         override fun onCreateViewHolder(
             parent: ViewGroup,
             viewType: Int
         ): MessageViewHolder {
+
             val textView = TextView(parent.context).apply {
                 textSize = 15f
-                setPadding(16, 12, 16, 12)
-                layoutParams = RecyclerView.LayoutParams(
+                setPadding(20, 14, 20, 14)
+                layoutParams = androidx.recyclerview.widget.RecyclerView.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT
                 ).apply {
@@ -153,10 +173,13 @@ class ConversationActivity : AppCompatActivity() {
             val message = messages[position]
             val isMine = message.senderId == currentUserId
 
+            val date = SimpleDateFormat(
+                "dd MMM, HH:mm",
+                Locale.getDefault()
+            ).format(Date(message.sentAt))
+
             holder.textView.text =
-                "${if (isMine) "You" else "Other user"}: ${message.content}\n" +
-                        SimpleDateFormat("dd MMM, HH:mm", Locale.getDefault())
-                            .format(Date(message.sentAt))
+                "${if (isMine) "You" else "Other user"}: ${message.content}\n$date"
 
             holder.textView.gravity =
                 if (isMine) Gravity.END else Gravity.START

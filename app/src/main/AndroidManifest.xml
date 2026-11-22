@@ -40,6 +40,20 @@
             android:name=".ui.tutor.TutorDetailsActivity"
             android:exported="false" />
 
+        <!-- Meetings -->
+        <activity
+            android:name=".ui.meetings.MeetingsActivity"
+            android:exported="false" />
+
+        <!-- Messaging -->
+        <activity
+            android:name=".ui.messages.MessagesActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.messages.ConversationActivity"
+            android:exported="false" />
+
         <activity
             android:name=".ui.auth.LoginActivity"
             android:exported="true"

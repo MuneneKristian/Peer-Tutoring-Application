@@ -10,10 +10,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.peertutoringapplication.data.datasource.DatabaseProvider
+import com.example.peertutoringapplication.data.repository.MessageRepository
 import com.example.peertutoringapplication.databinding.ActivityMessagesBinding
 import com.example.peertutoringapplication.utils.SessionManager
 import com.example.peertutoringapplication.viewmodel.MessageViewModel
 import com.example.peertutoringapplication.viewmodel.MessageViewModelFactory
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class MessagesActivity : AppCompatActivity() {
@@ -33,34 +36,46 @@ class MessagesActivity : AppCompatActivity() {
 
         sessionManager = SessionManager(this)
 
-        val factory = MessageViewModelFactory(application)
-        messageViewModel = ViewModelProvider(this, factory)[MessageViewModel::class.java]
+        val database = DatabaseProvider.getDatabase(this)
+        val repository = MessageRepository(database.messageDao())
+        val factory = MessageViewModelFactory(repository)
+
+        messageViewModel = ViewModelProvider(
+            this,
+            factory
+        )[MessageViewModel::class.java]
 
         setupRecyclerView()
+        observeMessages()
         loadConversations()
     }
 
     private fun setupRecyclerView() {
+
         conversationAdapter = ConversationAdapter(conversations) { otherUserId ->
+
             val intent = Intent(this, ConversationActivity::class.java)
+
             intent.putExtra("OTHER_USER_ID", otherUserId)
+
             startActivity(intent)
         }
 
-        binding.rvConversations.layoutManager = LinearLayoutManager(this)
+        binding.rvConversations.layoutManager =
+            LinearLayoutManager(this)
+
         binding.rvConversations.adapter = conversationAdapter
     }
 
-    private fun loadConversations() {
-        val currentUserId = sessionManager.getUserId()
+    private fun observeMessages() {
 
         lifecycleScope.launch {
-            try {
-                val messages = messageViewModel.getReceivedMessages(currentUserId)
+            messageViewModel.messages.collect { messages ->
 
                 conversations.clear()
 
                 messages.forEach { message ->
+
                     val otherUserId = message.senderId
 
                     if (!conversations.contains(otherUserId)) {
@@ -71,16 +86,19 @@ class MessagesActivity : AppCompatActivity() {
                 conversationAdapter.notifyDataSetChanged()
 
                 binding.tvNoConversations.visibility =
-                    if (conversations.isEmpty()) View.VISIBLE else View.GONE
-
-            } catch (e: Exception) {
-                Toast.makeText(
-                    this@MessagesActivity,
-                    "Could not load conversations: ${e.message}",
-                    Toast.LENGTH_LONG
-                ).show()
+                    if (conversations.isEmpty())
+                        View.VISIBLE
+                    else
+                        View.GONE
             }
         }
+    }
+
+    private fun loadConversations() {
+
+        val currentUserId = sessionManager.getUserId()
+
+        messageViewModel.loadReceivedMessages(currentUserId)
     }
 
     override fun onResume() {
@@ -96,17 +114,24 @@ class MessagesActivity : AppCompatActivity() {
         private val onClick: (Int) -> Unit
     ) : RecyclerView.Adapter<ConversationAdapter.ConversationViewHolder>() {
 
-        class ConversationViewHolder(val view: View) :
+        class ConversationViewHolder(view: View) :
             RecyclerView.ViewHolder(view) {
-            val tvUser: TextView = view.findViewById(android.R.id.text1)
+
+            val tvUser: TextView =
+                view.findViewById(android.R.id.text1)
         }
 
         override fun onCreateViewHolder(
             parent: android.view.ViewGroup,
             viewType: Int
         ): ConversationViewHolder {
+
             val view = android.view.LayoutInflater.from(parent.context)
-                .inflate(android.R.layout.simple_list_item_1, parent, false)
+                .inflate(
+                    android.R.layout.simple_list_item_1,
+                    parent,
+                    false
+                )
 
             return ConversationViewHolder(view)
         }
@@ -115,6 +140,7 @@ class MessagesActivity : AppCompatActivity() {
             holder: ConversationViewHolder,
             position: Int
         ) {
+
             val userId = users[position]
 
             holder.tvUser.text = "Conversation with User #$userId"

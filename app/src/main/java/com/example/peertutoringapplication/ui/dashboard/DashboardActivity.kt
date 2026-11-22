@@ -2,16 +2,18 @@ package com.example.peertutoringapplication.ui.dashboard
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.peertutoringapplication.databinding.ActivityDashboardBinding
 import com.example.peertutoringapplication.ui.auth.LoginActivity
 import com.example.peertutoringapplication.ui.tutor.TutorProfileActivity
 import com.example.peertutoringapplication.ui.tutor.ManageUnitsActivity
 import com.example.peertutoringapplication.ui.tutor.AvailabilityActivity
-import com.example.peertutoringapplication.utils.SessionManager
 import com.example.peertutoringapplication.ui.student.FindTutorsActivity
 import com.example.peertutoringapplication.ui.requests.RequestsActivity
+import com.example.peertutoringapplication.ui.meetings.MeetingsActivity
+import com.example.peertutoringapplication.ui.messages.MessagesActivity
+import com.example.peertutoringapplication.utils.SessionManager
+
 class DashboardActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDashboardBinding
@@ -64,11 +66,11 @@ class DashboardActivity : AppCompatActivity() {
         }
 
         binding.btnMeetings.setOnClickListener {
-            showMessage("Meetings")
+            startActivity(Intent(this, MeetingsActivity::class.java))
         }
 
         binding.btnMessages.setOnClickListener {
-            showMessage("Messages")
+            startActivity(Intent(this, MessagesActivity::class.java))
         }
 
         binding.btnLogout.setOnClickListener {
@@ -77,18 +79,12 @@ class DashboardActivity : AppCompatActivity() {
         }
     }
 
-    private fun showMessage(feature: String) {
-        Toast.makeText(
-            this,
-            "$feature will be available soon",
-            Toast.LENGTH_SHORT
-        ).show()
-    }
-
     private fun navigateToLogin() {
         val intent = Intent(this, LoginActivity::class.java)
+
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or
                 Intent.FLAG_ACTIVITY_CLEAR_TASK
+
         startActivity(intent)
         finish()
     }
