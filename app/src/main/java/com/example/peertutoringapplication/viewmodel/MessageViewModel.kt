@@ -36,6 +36,12 @@ class MessageViewModel(
         }
     }
 
+    fun loadMessagesForUser(userId: Int) {
+        viewModelScope.launch {
+            _messages.value = repository.getMessagesForUser(userId)
+        }
+    }
+
     fun loadReceivedMessages(userId: Int) {
         viewModelScope.launch {
             _messages.value = repository.getReceivedMessages(userId)

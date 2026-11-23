@@ -42,6 +42,18 @@ class TutorViewModel(
         }
     }
 
+    fun updateTutorProfile(profile: TutorProfile) {
+        viewModelScope.launch {
+            try {
+                repository.updateTutorProfile(profile)
+                _tutorProfile.value = profile
+                _message.value = "Tutor profile updated successfully."
+            } catch (e: Exception) {
+                _message.value = "Could not update tutor profile: ${e.message}"
+            }
+        }
+    }
+
     fun loadTutorProfile(userId: Int) {
         viewModelScope.launch {
             _tutorProfile.value = repository.getTutorProfile(userId)
@@ -64,6 +76,20 @@ class TutorViewModel(
                 _message.value = "Unit assigned successfully."
             } catch (e: Exception) {
                 _message.value = "Could not assign unit: ${e.message}"
+            }
+        }
+    }
+
+    fun removeUnit(userId: Int, unitId: Int) {
+        viewModelScope.launch {
+            try {
+                repository.removeUnit(userId, unitId)
+
+                _tutorUnits.value = repository.getUnitsForTutor(userId)
+
+                _message.value = "Teaching unit removed successfully."
+            } catch (e: Exception) {
+                _message.value = "Could not remove teaching unit: ${e.message}"
             }
         }
     }

@@ -67,8 +67,16 @@
             android:hint="Password"
             android:inputType="textPassword"
             android:padding="14dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="4dp"
             android:backgroundTint="#2563EB" />
+
+        <CheckBox
+            android:id="@+id/cbShowPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Show Password"
+            android:textColor="#555555"
+            android:layout_marginBottom="20dp" />
 
         <TextView
             android:layout_width="match_parent"
@@ -88,21 +96,35 @@
 
             <RadioButton
                 android:id="@+id/rbTutor"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Tutor" />
+                android:text="Tutor"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="I want to offer tutoring to other students."
+                android:textSize="13sp"
+                android:textColor="#666666"
+                android:layout_marginStart="40dp"
+                android:layout_marginBottom="12dp" />
 
             <RadioButton
                 android:id="@+id/rbTutee"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Tutee" />
+                android:text="Tutee"
+                android:textStyle="bold" />
 
-            <RadioButton
-                android:id="@+id/rbBoth"
-                android:layout_width="wrap_content"
+            <TextView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Both" />
+                android:text="I want to find tutors and receive tutoring."
+                android:textSize="13sp"
+                android:textColor="#666666"
+                android:layout_marginStart="40dp"
+                android:layout_marginBottom="12dp" />
 
         </RadioGroup>
 

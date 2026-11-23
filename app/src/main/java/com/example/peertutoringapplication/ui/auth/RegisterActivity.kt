@@ -2,6 +2,8 @@ package com.example.peertutoringapplication.ui.auth
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -32,6 +34,7 @@ class RegisterActivity : AppCompatActivity() {
             UserViewModelFactory(repository)
         )[UserViewModel::class.java]
 
+        setupPasswordVisibility()
         setupRegistrationButton()
         observeRegistrationMessage()
 
@@ -41,9 +44,28 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
+    private fun setupPasswordVisibility() {
+        binding.cbShowPassword.setOnCheckedChangeListener { _, isChecked ->
+
+            val cursorPosition = binding.etPassword.selectionStart
+
+            binding.etPassword.transformationMethod =
+                if (isChecked) {
+                    HideReturnsTransformationMethod.getInstance()
+                } else {
+                    PasswordTransformationMethod.getInstance()
+                }
+
+            binding.etPassword.setSelection(
+                cursorPosition.coerceIn(0, binding.etPassword.text.length)
+            )
+        }
+    }
+
     private fun setupRegistrationButton() {
 
         binding.btnRegister.setOnClickListener {
+
             val firstName = binding.etFirstName.text.toString()
             val lastName = binding.etLastName.text.toString()
             val email = binding.etEmail.text.toString()
@@ -63,7 +85,6 @@ class RegisterActivity : AppCompatActivity() {
             val role = when (selectedRoleId) {
                 binding.rbTutor.id -> "Tutor"
                 binding.rbTutee.id -> "Tutee"
-                binding.rbBoth.id -> "Both"
                 else -> ""
             }
 
@@ -81,6 +102,7 @@ class RegisterActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             userViewModel.registrationMessage.collect { message ->
+
                 if (message != null) {
                     Toast.makeText(
                         this@RegisterActivity,

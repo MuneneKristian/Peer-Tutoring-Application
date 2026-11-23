@@ -2,6 +2,8 @@ package com.example.peertutoringapplication.ui.auth
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -37,6 +39,8 @@ class LoginActivity : AppCompatActivity() {
             UserViewModelFactory(repository)
         )[UserViewModel::class.java]
 
+        setupPasswordVisibility()
+
         binding.btnLogin.setOnClickListener {
             val email = binding.etEmail.text.toString()
             val password = binding.etPassword.text.toString()
@@ -51,6 +55,24 @@ class LoginActivity : AppCompatActivity() {
 
         observeLoginMessage()
         observeLoggedInUser()
+    }
+
+    private fun setupPasswordVisibility() {
+        binding.cbShowPassword.setOnCheckedChangeListener { _, isChecked ->
+
+            val cursorPosition = binding.etPassword.selectionStart
+
+            binding.etPassword.transformationMethod =
+                if (isChecked) {
+                    HideReturnsTransformationMethod.getInstance()
+                } else {
+                    PasswordTransformationMethod.getInstance()
+                }
+
+            binding.etPassword.setSelection(
+                cursorPosition.coerceIn(0, binding.etPassword.text.length)
+            )
+        }
     }
 
     private fun observeLoginMessage() {

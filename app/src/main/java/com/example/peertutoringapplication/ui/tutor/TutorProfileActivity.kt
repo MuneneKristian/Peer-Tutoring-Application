@@ -1,6 +1,7 @@
 package com.example.peertutoringapplication.ui.tutor
 
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -19,6 +20,9 @@ class TutorProfileActivity : AppCompatActivity() {
     private lateinit var binding: ActivityTutorProfileBinding
     private lateinit var tutorViewModel: TutorViewModel
     private lateinit var sessionManager: SessionManager
+
+    private var profileExists = false
+    private var originalProfile: TutorProfile? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,10 +49,33 @@ class TutorProfileActivity : AppCompatActivity() {
         observeProfile()
         observeMessages()
 
+        setupButtons()
+
         tutorViewModel.loadTutorProfile(sessionManager.getUserId())
+    }
+
+    private fun setupButtons() {
 
         binding.btnSaveProfile.setOnClickListener {
             saveProfile()
+        }
+
+        binding.btnEditProfile.setOnClickListener {
+            setFormEnabled(true)
+
+            binding.btnEditProfile.visibility = View.GONE
+            binding.btnSaveProfile.visibility = View.VISIBLE
+            binding.btnSaveProfile.text = "Save Changes"
+            binding.btnCancelEdit.visibility = View.VISIBLE
+        }
+
+        binding.btnCancelEdit.setOnClickListener {
+            originalProfile?.let { profile ->
+                displayProfile(profile)
+            }
+
+            setFormEnabled(false)
+            showExistingProfileButtons()
         }
     }
 
@@ -57,25 +84,75 @@ class TutorProfileActivity : AppCompatActivity() {
             tutorViewModel.tutorProfile.collect { profile ->
 
                 if (profile != null) {
-                    binding.etCourse.setText(profile.course)
-                    binding.etYearOfStudy.setText(profile.yearOfStudy)
-                    binding.etBio.setText(profile.bio)
+                    profileExists = true
+                    originalProfile = profile
 
-                    when (profile.teachingMode) {
-                        "Physical" -> binding.rbPhysical.isChecked = true
-                        "Online" -> binding.rbOnline.isChecked = true
-                        "Both" -> binding.rbBoth.isChecked = true
-                    }
+                    displayProfile(profile)
+                    setFormEnabled(false)
+                    showExistingProfileButtons()
                 }
             }
         }
     }
 
+    private fun displayProfile(profile: TutorProfile) {
+
+        binding.etCourse.setText(profile.course)
+        binding.etYearOfStudy.setText(profile.yearOfStudy)
+        binding.etBio.setText(profile.bio)
+
+        binding.rgTeachingMode.clearCheck()
+
+        when (profile.teachingMode) {
+            "Physical" -> binding.rbPhysical.isChecked = true
+            "Online" -> binding.rbOnline.isChecked = true
+            "Both" -> binding.rbBoth.isChecked = true
+        }
+    }
+
+    private fun setFormEnabled(enabled: Boolean) {
+
+        binding.etCourse.isEnabled = enabled
+        binding.etYearOfStudy.isEnabled = enabled
+        binding.etBio.isEnabled = enabled
+
+        binding.rbPhysical.isEnabled = enabled
+        binding.rbOnline.isEnabled = enabled
+        binding.rbBoth.isEnabled = enabled
+    }
+
+    private fun showExistingProfileButtons() {
+
+        binding.btnEditProfile.visibility = View.VISIBLE
+        binding.btnSaveProfile.visibility = View.GONE
+        binding.btnCancelEdit.visibility = View.GONE
+
+        binding.btnSaveProfile.text = "Save Changes"
+    }
+
     private fun observeMessages() {
         lifecycleScope.launch {
             tutorViewModel.message.collect { message ->
+
                 if (message != null) {
-                    Toast.makeText(this@TutorProfileActivity, message, Toast.LENGTH_SHORT).show()
+
+                    Toast.makeText(
+                        this@TutorProfileActivity,
+                        message,
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    if (
+                        message == "Tutor profile saved successfully." ||
+                        message == "Tutor profile updated successfully."
+                    ) {
+                        profileExists = true
+
+                        // Reload the saved profile before leaving edit mode.
+                        tutorViewModel.loadTutorProfile(
+                            sessionManager.getUserId()
+                        )
+                    }
                 }
             }
         }
@@ -97,12 +174,20 @@ class TutorProfileActivity : AppCompatActivity() {
         }
 
         if (course.isEmpty() || year.isEmpty() || bio.isEmpty()) {
-            Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                this,
+                "Please fill in all fields",
+                Toast.LENGTH_SHORT
+            ).show()
             return
         }
 
         if (teachingMode.isEmpty()) {
-            Toast.makeText(this, "Please select a teaching mode", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                this,
+                "Please select a teaching mode",
+                Toast.LENGTH_SHORT
+            ).show()
             return
         }
 
@@ -114,6 +199,10 @@ class TutorProfileActivity : AppCompatActivity() {
             teachingMode = teachingMode
         )
 
-        tutorViewModel.saveTutorProfile(profile)
+        if (profileExists) {
+            tutorViewModel.updateTutorProfile(profile)
+        } else {
+            tutorViewModel.saveTutorProfile(profile)
+        }
     }
 }

@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.peertutoringapplication.data.datasource.DatabaseProvider
 import com.example.peertutoringapplication.data.model.Message
 import com.example.peertutoringapplication.data.repository.MessageRepository
@@ -16,7 +17,6 @@ import com.example.peertutoringapplication.databinding.ActivityConversationBindi
 import com.example.peertutoringapplication.utils.SessionManager
 import com.example.peertutoringapplication.viewmodel.MessageViewModel
 import com.example.peertutoringapplication.viewmodel.MessageViewModelFactory
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -29,7 +29,7 @@ class ConversationActivity : AppCompatActivity() {
     private lateinit var sessionManager: SessionManager
 
     private var currentUserId = 0
-    private var otherUserId = 0
+    private var otherUserId = -1
 
     private val messages = mutableListOf<Message>()
     private lateinit var messageAdapter: MessageAdapter
@@ -52,6 +52,7 @@ class ConversationActivity : AppCompatActivity() {
         }
 
         val database = DatabaseProvider.getDatabase(this)
+
         val repository = MessageRepository(database.messageDao())
         val factory = MessageViewModelFactory(repository)
 
@@ -60,8 +61,7 @@ class ConversationActivity : AppCompatActivity() {
             factory
         )[MessageViewModel::class.java]
 
-        binding.tvConversationTitle.text =
-            "Conversation with User #$otherUserId"
+        loadOtherUserName(database)
 
         setupRecyclerView()
         setupSendButton()
@@ -70,28 +70,35 @@ class ConversationActivity : AppCompatActivity() {
         messageViewModel.loadConversation(currentUserId, otherUserId)
     }
 
+    private fun loadOtherUserName(database: com.example.peertutoringapplication.data.datasource.AppDatabase) {
+        lifecycleScope.launch {
+            val user = database.userDao().getUserById(otherUserId)
+
+            binding.tvConversationTitle.text =
+                if (user != null) {
+                    "${user.firstName} ${user.lastName}"
+                } else {
+                    "Conversation"
+                }
+        }
+    }
+
     private fun setupRecyclerView() {
         messageAdapter = MessageAdapter(messages, currentUserId)
 
-        binding.rvMessages.layoutManager =
-            LinearLayoutManager(this).apply {
-                stackFromEnd = true
-            }
+        binding.rvMessages.layoutManager = LinearLayoutManager(this).apply {
+            stackFromEnd = true
+        }
 
         binding.rvMessages.adapter = messageAdapter
     }
 
     private fun setupSendButton() {
         binding.btnSendMessage.setOnClickListener {
-
             val content = binding.etMessage.text.toString().trim()
 
             if (content.isEmpty()) {
-                Toast.makeText(
-                    this,
-                    "Enter a message first.",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(this, "Enter a message first.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -104,7 +111,6 @@ class ConversationActivity : AppCompatActivity() {
             )
 
             messageViewModel.sendMessage(message)
-
             binding.etMessage.text.clear()
         }
     }
@@ -112,7 +118,6 @@ class ConversationActivity : AppCompatActivity() {
     private fun observeMessages() {
         lifecycleScope.launch {
             messageViewModel.messages.collect { result ->
-
                 messages.clear()
                 messages.addAll(result)
 
@@ -142,10 +147,10 @@ class ConversationActivity : AppCompatActivity() {
     private class MessageAdapter(
         private val messages: List<Message>,
         private val currentUserId: Int
-    ) : androidx.recyclerview.widget.RecyclerView.Adapter<MessageAdapter.MessageViewHolder>() {
+    ) : RecyclerView.Adapter<MessageAdapter.MessageViewHolder>() {
 
         class MessageViewHolder(val textView: TextView) :
-            androidx.recyclerview.widget.RecyclerView.ViewHolder(textView)
+            RecyclerView.ViewHolder(textView)
 
         override fun onCreateViewHolder(
             parent: ViewGroup,
@@ -155,7 +160,8 @@ class ConversationActivity : AppCompatActivity() {
             val textView = TextView(parent.context).apply {
                 textSize = 15f
                 setPadding(20, 14, 20, 14)
-                layoutParams = androidx.recyclerview.widget.RecyclerView.LayoutParams(
+
+                layoutParams = RecyclerView.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT
                 ).apply {

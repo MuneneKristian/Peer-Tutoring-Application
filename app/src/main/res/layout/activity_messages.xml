@@ -6,14 +6,32 @@
     android:background="#F5F7FA"
     android:padding="20dp">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Messages"
-        android:textSize="26sp"
-        android:textStyle="bold"
-        android:textColor="#172B4D"
-        android:layout_marginBottom="20dp" />
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="20dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Messages"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            android:textColor="#172B4D" />
+
+        <Button
+            android:id="@+id/btnNewConversation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+"
+            android:textSize="22sp"
+            android:minWidth="52dp"
+            android:contentDescription="Start a new conversation" />
+
+    </LinearLayout>
 
     <TextView
         android:layout_width="match_parent"
@@ -28,10 +46,10 @@
         android:id="@+id/tvNoConversations"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="You have no conversations yet."
+        android:text="You have no conversations yet.\nPress + to chat with someone you've connected with."
         android:textColor="#667085"
         android:gravity="center"
-        android:padding="20dp"
+        android:padding="24dp"
         android:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView

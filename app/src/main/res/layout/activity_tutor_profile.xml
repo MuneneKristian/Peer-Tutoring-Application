@@ -106,10 +106,27 @@
         </RadioGroup>
 
         <Button
+            android:id="@+id/btnEditProfile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Edit Profile"
+            android:visibility="gone"
+            android:backgroundTint="#2563EB" />
+
+        <Button
             android:id="@+id/btnSaveProfile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Save Profile" />
+            android:text="Save Profile"
+            android:backgroundTint="#2563EB" />
+
+        <Button
+            android:id="@+id/btnCancelEdit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:visibility="gone"
+            android:backgroundTint="#777777" />
 
     </LinearLayout>
 

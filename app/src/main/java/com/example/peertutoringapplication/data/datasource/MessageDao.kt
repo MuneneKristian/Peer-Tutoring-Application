@@ -31,6 +31,13 @@ interface MessageDao {
     suspend fun getReceivedMessages(userId: Int): List<Message>
 
     @Query("""
+        SELECT * FROM messages
+        WHERE senderId = :userId OR receiverId = :userId
+        ORDER BY sentAt DESC
+    """)
+    suspend fun getMessagesForUser(userId: Int): List<Message>
+
+    @Query("""
         UPDATE messages SET isRead = 1
         WHERE messageId = :messageId
     """)
